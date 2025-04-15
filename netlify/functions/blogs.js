@@ -1,13 +1,17 @@
-const { Octokit } = require('octokit');
-
-// u521du59cbu5316GitHub API
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-});
-
-const REPO_OWNER = 'Lin-xun1113'; // u66ffu6362u4e3au60a8u7684GitHubu7528u6237u540d
-const REPO_NAME = 'MyPersonnalPage'; // u60a8u7684u4ed3u5e93u540d
-const BLOGS_PATH = 'data/blogs.json'; // u5b58u50a8u535au5ba2u6570u636eu7684u8defu5f84
+// 采用CommonJS格式导入依赖项
+try {
+  var { Octokit } = require('@octokit/rest');
+} catch (error) {
+  console.error('无法加载@octokit/rest:', error);
+  // 尝试加载octokit
+  try {
+    var { Octokit } = require('octokit');
+  } catch (error) {
+    console.error('无法加载octokit:', error);
+    // 创建一个空的Octokit实现，避免函数崩溃
+    var Octokit = function() { this.rest = { repos: { getContent: async () => { throw new Error('Octokit模块无法加载'); } } }; };
+  }
+}
 
 // 添加CORS头
 const headers = {
@@ -16,8 +20,30 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
+// u521du59cbu5316GitHub API
+let octokit;
+try {
+  octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN
+  });
+} catch (error) {
+  console.error('初始化Octokit失败:', error);
+  // 创建一个空对象作为备用
+  octokit = {
+    rest: {
+      repos: {
+        getContent: async () => { throw new Error('Octokit初始化失败'); }
+      }
+    }
+  };
+}
+
+const REPO_OWNER = 'Lin-xun1113'; // u66ffu6362u4e3au60a8u7684GitHubu7528u6237u540d
+const REPO_NAME = 'MyPersonnalPage'; // u60a8u7684u4ed3u5e93u540d
+const BLOGS_PATH = 'data/blogs.json'; // u5b58u50a8u535au5ba2u6570u636eu7684u8defu5f84
+
 // u83b7u53d6u535au5ba2u5217u8868
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   console.log('blogs函数被调用');
 
   // 处理预检请求

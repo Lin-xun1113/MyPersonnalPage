@@ -1,5 +1,27 @@
-import { Octokit } from 'octokit';
-import * as ethers from 'ethers';
+// 安全地导入模块
+try {
+  var { Octokit } = require('@octokit/rest');
+} catch (error) {
+  console.error('无法加载@octokit/rest:', error);
+  try {
+    var { Octokit } = require('octokit');
+  } catch (error) {
+    console.error('无法加载octokit:', error);
+    var Octokit = function() { this.rest = { repos: { getContent: async () => { throw new Error('Octokit模块无法加载'); } } }; };
+  }
+}
+
+try {
+  var ethers = require('ethers');
+} catch (error) {
+  console.error('无法加载ethers:', error);
+  // 创建一个模拟的ethers对象
+  var ethers = {
+    utils: {
+      verifyMessage: () => { throw new Error('ethers模块无法加载'); }
+    }
+  };
+}
 
 // 检查环境变量
 // 如果没有GITHUB_TOKEN，直接输出警告
@@ -45,7 +67,7 @@ async function verifySignature(address, message, signature) {
 }
 
 // u66f4u65b0u535au5ba2
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   console.log('updateBlog函数被调用');
   
   // 添加CORS头

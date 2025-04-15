@@ -1,5 +1,27 @@
-import { Octokit } from 'octokit';
-import * as ethers from 'ethers';
+// 安全地导入模块
+try {
+  var { Octokit } = require('@octokit/rest');
+} catch (error) {
+  console.error('无法加载@octokit/rest:', error);
+  try {
+    var { Octokit } = require('octokit');
+  } catch (error) {
+    console.error('无法加载octokit:', error);
+    var Octokit = function() { this.rest = { repos: { getContent: async () => { throw new Error('Octokit模块无法加载'); } } }; };
+  }
+}
+
+try {
+  var ethers = require('ethers');
+} catch (error) {
+  console.error('无法加载ethers:', error);
+  // 创建一个模拟的ethers对象
+  var ethers = {
+    utils: {
+      verifyMessage: () => { throw new Error('ethers模块无法加载'); }
+    }
+  };
+}
 
 // u521du59cbu5316GitHub API
 const octokit = new Octokit({
@@ -31,7 +53,7 @@ async function verifySignature(address, message, signature) {
 }
 
 // u66f4u65b0u535au5ba2u8bc4u8bba
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   // u53eau5904u7406POSTu8bf7u6c42
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'u65b9u6cd5u4e0du5141u8bb8' }) };

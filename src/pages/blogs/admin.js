@@ -8,7 +8,6 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { ADMIN_ADDRESSES } from '../../utils/web3Config';
 import { mockBlogs } from '../../utils/mockData';
-import '../../styles/modern-blog.css';
 
 const AdminPage = () => {
   const router = useRouter();

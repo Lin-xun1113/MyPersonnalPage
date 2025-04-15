@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import '../styles/rainbowkit-custom.css';
 import '../styles/blog.css';
+import '../styles/modern-blog.css';
 import { useEffect } from 'react';
 import { Web3Provider } from '../utils/Web3Provider';
 

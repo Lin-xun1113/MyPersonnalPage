@@ -8,7 +8,6 @@ import Link from 'next/link';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { mockBlogs } from '../../utils/mockData';
-import '../../styles/modern-blog.css';
 
 const BlogsPage = () => {
   const [blogs, setBlogs] = useState([]);

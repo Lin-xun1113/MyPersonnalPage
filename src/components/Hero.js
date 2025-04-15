@@ -68,22 +68,20 @@ const Hero = () => {
           >
             <div className="hero-image-container p-4">
               <div className="hero-backdrop"></div>
-              {/* 移除临时头像，使用彩色区块代替 */}
-              <div 
+              {/* 使用真实头像图片 */}
+              <img
+                src="/avatar.jpg"
+                alt="Linxun头像"
                 className="hero-image-placeholder"
                 style={{
                   width: "350px", 
                   height: "350px",
-                  background: "linear-gradient(45deg, var(--primary) 0%, var(--accent) 100%)",
+                  objectFit: "cover",
                   borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
                   margin: "0 auto",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
+                  border: "4px solid var(--accent)"
                 }}
-              >
-                <span className="display-1 fw-bold text-white">L</span>
-              </div>
+              />
             </div>
           </motion.div>
         </div>

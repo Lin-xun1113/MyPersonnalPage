@@ -58,9 +58,9 @@ const Navbar = () => {
     <nav className={`navbar navbar-expand-lg fixed-top shadow-sm ${isScrolled ? 'bg-white navbar-light py-2' : 'bg-transparent navbar-dark py-3'}`}
          style={{transition: 'all 0.3s ease'}}>
       <div className="container">
-        <a className="navbar-brand fw-bold fs-4" href="#">
+        <Link href="/" className="navbar-brand fw-bold fs-4">
           <span className="text-primary-custom">L</span>inxun
-        </a>
+        </Link>
         
         <button 
           className="navbar-toggler border-0" 

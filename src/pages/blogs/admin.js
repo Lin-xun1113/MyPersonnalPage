@@ -459,7 +459,7 @@ const AdminPage = () => {
   return (
     <>
       <Navbar />
-      <section className="admin-section py-5">
+      <section className="admin-section py-5" style={{ paddingTop: '100px', marginTop: '30px' }}>
         <div className="container">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 style={{ fontSize: '2.5rem', background: 'linear-gradient(90deg, #f1f5f9, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>博客管理</h1>

@@ -34,17 +34,17 @@ const About = () => {
                   className="col-md-4 text-center mb-4 mb-md-0"
                   variants={variants}
                 >
-                  <div className="rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                  <img 
+                    src="/avatar.jpg" 
+                    alt="Linxun头像" 
+                    className="rounded-circle mx-auto d-block" 
                     style={{
                       width: '200px',
                       height: '200px',
-                      background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
-                      color: 'white',
-                      fontSize: '4rem',
-                      fontWeight: 'bold'
-                    }}>
-                    L
-                  </div>
+                      objectFit: 'cover',
+                      border: '3px solid var(--primary)'
+                    }}
+                  />
                 </motion.div>
                 
                 <motion.div 

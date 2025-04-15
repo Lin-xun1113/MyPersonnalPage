@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
+import { stringToHex } from 'viem';
 import { config, isAdmin } from './web3Config';
 
 // 创建上下文对象
@@ -43,17 +44,14 @@ const Web3ContextProvider = ({ children, adminAddress, setAdminAddress }) => {
     }
   }, [address]);
   
-  // 签名消息的增强函数
+  // 使用wagmi的useSignMessage hook
+  const { signMessageAsync } = useSignMessage();
+  
+  // 签名消息的增强函数 - 使用wagmi实现
   const signMessage = async (message) => {
     console.log('===== Web3Provider: 开始签名过程 =====');
     console.log('签名消息:', message);
     console.log('当前连接地址:', address);
-    
-    if (!window.ethereum) {
-      console.error('浏览器不支持以太坊');
-      alert('请安装并解锁MetaMask或其他支持的钱包');
-      throw new Error('浏览器不支持以太坊');
-    }
     
     if (!address) {
       console.error('没有连接钱包');
@@ -63,18 +61,16 @@ const Web3ContextProvider = ({ children, adminAddress, setAdminAddress }) => {
     
     try {
       console.log('准备显示签名提示...');
-      // 显示提示以确保用户知道需要签名
-      alert(`请在MetaMask弹窗中完成签名，以认证您的操作:
-
-${message}`);
-      
+      // 不再显示alert，让钱包自己弹出签名窗口
+      // 使用wagmi的signMessageAsync方法
       console.log('发送签名请求...');
-      const signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [message, address],
+      
+      const signature = await signMessageAsync({
+        message: message,
+        account: address
       });
       
-      console.log('签名成功! 签名长度:', signature.length);
+      console.log('签名成功! 签名结果:', signature);
       
       return {
         message,
@@ -83,6 +79,7 @@ ${message}`);
       };
     } catch (error) {
       console.error('签名失败:', error);
+      alert(`签名失败: ${error.message || '未知错误'}`);
       throw error;
     }
   };

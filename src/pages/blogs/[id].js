@@ -285,11 +285,14 @@ const BlogDetailPage = () => {
             variants={variants}
             className="py-5"
           >
-            <div className="mb-4 d-flex justify-content-between align-items-center">
-              <Link href="/blogs" className="btn btn-outline-primary mb-4">
-                ← 返回博客列表
+            <div className="mb-4">
+              <Link href="/blogs" className="btn btn-outline-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                返回博客列表
               </Link>
-              <ConnectButton />
             </div>
             
             <div className="card blog-detail-card mb-5 bg-darker shadow-lg border-0">

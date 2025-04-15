@@ -45,13 +45,13 @@ const Navbar = () => {
   };
   
   const navLinks = [
-    { title: '首页', href: '#' },
-    { title: '关于我', href: '#about' },
-    { title: '技能', href: '#skills' },
-    { title: '项目', href: '#projects' },
-    { title: '爱好', href: '#hobbies' },
-    { title: '日志', href: '/blogs', isExternal: true },
-    { title: '联系', href: '#contact' }
+    { title: '首页', href: '/' },
+    { title: '关于我', href: '/#about' },
+    { title: '技能', href: '/#skills' },
+    { title: '项目', href: '/#projects' },
+    { title: '爱好', href: '/#hobbies' },
+    { title: '日志', href: '/blogs' },
+    { title: '联系', href: '/#contact' }
   ];
   
   return (
@@ -85,14 +85,13 @@ const Navbar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
               >
-                <a 
+                <Link 
                   className="nav-link px-3 fw-medium" 
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  {...(link.isExternal ? { target: '_self' } : {})}
                 >
                   {link.title}
-                </a>
+                </Link>
               </motion.li>
             ))}
             <motion.li 

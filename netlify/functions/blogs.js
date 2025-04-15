@@ -79,12 +79,28 @@ exports.handler = async (event, context) => {
     
     // u5c1du8bd5u4eceu4ed3u5e93u83b7u53d6u535au5ba2u6570u636e
     try {
-      const { data } = await octokit.rest.repos.getContent({
-        owner: REPO_OWNER,
-        repo: REPO_NAME,
-        path: BLOGS_PATH,
-        ref: 'main', // u6216u60a8u7684u9ed8u8ba4u5206u652f
-      });
+      // 尝试使用master分支，如果失败则尝试main分支
+      let data;
+      try {
+        const response = await octokit.rest.repos.getContent({
+          owner: REPO_OWNER,
+          repo: REPO_NAME,
+          path: BLOGS_PATH,
+          ref: 'master', // 先尝试master分支
+        });
+        data = response.data;
+        console.log('成功使用master分支获取数据');
+      } catch (branchError) {
+        console.log('尝试使用main分支');
+        const response = await octokit.rest.repos.getContent({
+          owner: REPO_OWNER,
+          repo: REPO_NAME,
+          path: BLOGS_PATH,
+          ref: 'main',
+        });
+        data = response.data;
+        console.log('成功使用main分支获取数据');
+      }
       
       console.log('成功获取GitHub文件');
       // u89e3u7801base64u5185u5bb9

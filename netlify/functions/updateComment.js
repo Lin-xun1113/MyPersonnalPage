@@ -75,8 +75,9 @@ exports.handler = async (event, context) => {
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path: BLOGS_PATH,
-        ref: 'main',
+        ref: 'master', // 使用master分支
       });
+      console.log('成功从仓库获取博客数据');
       const content = Buffer.from(data.content, 'base64').toString();
       blogs = JSON.parse(content);
     } catch (error) {
@@ -121,24 +122,28 @@ exports.handler = async (event, context) => {
     // u5c06u66f4u65b0u540eu7684u6570u636eu5199u56deu5230GitHub
     const content = JSON.stringify(blogs, null, 2);
     
-    // u83b7u53d6u5f53u524du6587u4ef6u7684SHAu503c
+    // u83b7u53d6u6587u4ef6u7684SHAu503c
     const fileData = await octokit.rest.repos.getContent({
       owner: REPO_OWNER,
       repo: REPO_NAME,
       path: BLOGS_PATH,
+      ref: 'master', // 使用master分支
     });
+    console.log('成功获取文件SHA值');
     const sha = fileData.data.sha;
 
     // u66f4u65b0u6587u4ef6
+    console.log(`准备${operation}博客评论, 博客ID: ${blogId}`);
     await octokit.rest.repos.createOrUpdateFileContents({
       owner: REPO_OWNER,
       repo: REPO_NAME,
       path: BLOGS_PATH,
-      message: `${operation} comment on blog: ${blogs[blogIndex].title}`,
-      content: Buffer.from(content).toString('base64'),
-      sha: sha,
-      branch: 'main',
+      message: `${operation} comment on blog: ${blogId}`,
+      content: Buffer.from(JSON.stringify(blogs, null, 2)).toString('base64'),
+      sha: fileData.data.sha,
+      branch: 'master', // 使用master分支
     });
+    console.log('成功更新评论数据');
 
     return {
       statusCode: 200,

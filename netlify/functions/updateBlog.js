@@ -142,11 +142,12 @@ exports.handler = async (event, context) => {
         throw new Error('未设置GITHUB_TOKEN环境变量');
       }
 
+      console.log('正在获取博客文件，使用master分支');
       const { data } = await octokit.rest.repos.getContent({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path: BLOGS_PATH,
-        ref: 'main',
+        ref: 'master', // 使用master分支而不main
       });
       console.log('成功获取GitHub文件内容');
       const content = Buffer.from(data.content, 'base64').toString();
@@ -207,11 +208,12 @@ exports.handler = async (event, context) => {
     try {
       console.log('尝试获取现有文件的SHA值');
       // 获取当前文件的SHA值(如果存在)
+      console.log('正在获取文件SHA，使用master分支');
       const fileData = await octokit.rest.repos.getContent({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path: BLOGS_PATH,
-        ref: 'main',
+        ref: 'master', // 使用master分支而不main
       });
       sha = fileData.data.sha;
       console.log(`获取到现有文件的SHA值: ${sha}`);
@@ -226,6 +228,10 @@ exports.handler = async (event, context) => {
     // 创建或更新文件
     try {
       console.log(`准备${sha ? '更新' : '创建'}博客文件`);
+      console.log('准备写入GitHub文件，使用master分支');
+      console.log('操作:', operation, '博客标题:', blog.title);
+      console.log('SHA值:', sha ? '有SHA' : '无SHA');
+      
       const response = await octokit.rest.repos.createOrUpdateFileContents({
         owner: REPO_OWNER,
         repo: REPO_NAME,
@@ -233,7 +239,7 @@ exports.handler = async (event, context) => {
         message: `${operation} blog: ${blog.title}`,
         content: Buffer.from(content).toString('base64'),
         sha: sha, // 如果文件已存在，需要提供sha
-        branch: 'main',
+        branch: 'master', // 使用master分支而不main
       });
       console.log('博客数据成功保存到GitHub');
     } catch (error) {

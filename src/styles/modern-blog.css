@@ -1,0 +1,337 @@
+/* 现代化博客页面样式 */
+
+/* 全局主题色彩 */
+:root {
+  --primary-color: #3B82F6;       /* 蓝色主色调 */
+  --primary-hover: #2563EB;      /* 蓝色悬停 */
+  --secondary-color: #4F46E5;     /* 紫色次要色调 */
+  --dark-bg-1: #0F172A;           /* 暗色背景 1 */
+  --dark-bg-2: #1E293B;           /* 暗色背景 2 */
+  --dark-bg-3: #334155;           /* 暗色背景 3 */
+  --light-text: #F1F5F9;         /* 亮色文本 */
+  --gray-text: #94A3B8;           /* 灰色文本 */
+  --accent-color: #EC4899;       /* 强调色（粉色） */
+  --success-color: #22C55E;       /* 成功色（绿色） */
+  --warning-color: #EAB308;       /* 警告色（黄色） */
+  --danger-color: #EF4444;        /* 危险色（红色） */
+}
+
+/* ===== 博客列表页样式 ===== */
+.blogs-section {
+  background-color: var(--dark-bg-1);
+  min-height: calc(100vh - 200px);
+}
+
+.blog-card {
+  background: linear-gradient(145deg, #1E293B, #263249);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.blog-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+}
+
+.blog-card .card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.blog-card h3 {
+  color: var(--light-text);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.blog-card .text-white-custom {
+  color: var(--light-text);
+  line-height: 1.6;
+}
+
+.blog-card .btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.blog-card .btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary-custom {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -1px rgba(59, 130, 246, 0.1);
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.15);
+  background: linear-gradient(90deg, var(--primary-hover), var(--secondary-color));
+  color: white;
+}
+
+/* 阅读全文按钮 */
+.read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.read-more-btn:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: var(--primary-hover);
+}
+
+.read-more-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.read-more-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* 博客日期和评论计数的样式 */
+.blog-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--gray-text);
+  font-size: 0.85rem;
+}
+
+.blog-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== 博客管理页样式 ===== */
+.admin-section {
+  background-color: var(--dark-bg-1);
+  min-height: calc(100vh - 200px);
+}
+
+.admin-card {
+  background: linear-gradient(145deg, #1E293B, #263249);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.admin-card .card-header {
+  background-color: rgba(15, 23, 42, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem 1.5rem;
+}
+
+.admin-card .card-header h3 {
+  margin: 0;
+  color: var(--light-text);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-card .card-body {
+  padding: 1.5rem;
+}
+
+/* 表单和输入样式 */
+.form-control, .form-control:focus {
+  background-color: var(--dark-bg-2);
+  border: 1px solid var(--dark-bg-3);
+  color: var(--light-text);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  border-color: var(--primary-color);
+}
+
+.form-control::placeholder {
+  color: var(--gray-text);
+  opacity: 0.7;
+}
+
+.form-label {
+  color: var(--light-text);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+textarea.form-control {
+  resize: none;
+  line-height: 1.6;
+  min-height: 120px;
+}
+
+/* 博客列表样式 */
+.blog-list-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.blog-list-table tbody tr {
+  background-color: var(--dark-bg-2);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.blog-list-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.blog-list-table td {
+  padding: 0.75rem 1rem;
+  color: var(--light-text);
+  border: none;
+}
+
+.blog-list-table td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.blog-list-table td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* 按钮组 */
+.btn-group-sm .btn {
+  margin: 0 3px;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-edit {
+  background-color: rgba(74, 222, 128, 0.1);
+  color: #4ADE80;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.btn-edit:hover {
+  background-color: rgba(74, 222, 128, 0.2);
+  color: #22C55E;
+}
+
+.btn-delete {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #F87171;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.btn-delete:hover {
+  background-color: rgba(248, 113, 113, 0.2);
+  color: #EF4444;
+}
+
+.btn-view {
+  background-color: rgba(56, 189, 248, 0.1);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.btn-view:hover {
+  background-color: rgba(56, 189, 248, 0.2);
+  color: #0EA5E9;
+}
+
+/* 发布按钮 */
+.submit-btn {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1), 0 2px 4px -1px rgba(79, 70, 229, 0.06);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2), 0 4px 6px -2px rgba(79, 70, 229, 0.1);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .blog-card h3 {
+    font-size: 1.25rem;
+  }
+  
+  .blog-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .blog-list-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .admin-card .card-body {
+    padding: 1rem;
+  }
+}

@@ -32,28 +32,28 @@ const Skills = () => {
       title: '区块链技术',
       icon: <FiServer className="text-primary-custom fs-3" />,
       skills: [
-        { name: 'Solidity', level: 85, icon: <SiSolidity /> },
-        { name: '智能合约开发', level: 80, icon: <SiEthereum /> },
-        { name: '智能合约审计', level: 60, icon: <FiShield /> },
+        { name: 'Solidity', level: 75, icon: <SiSolidity /> },
+        { name: '智能合约开发', level: 65, icon: <SiEthereum /> },
+        { name: '智能合约审计', level: 30, icon: <FiShield /> },
       ]
     },
     {
       title: '编程语言',
       icon: <FiCode className="text-primary-custom fs-3" />,
       skills: [
-        { name: 'Python', level: 90, icon: <SiPython /> },
-        { name: 'Solidity', level: 85, icon: <SiSolidity /> },
-        { name: 'JavaScript/React', level: 75, icon: <SiReact /> },
+        { name: 'Python', level: 80, icon: <SiPython /> },
+        { name: 'Solidity', level: 75, icon: <SiSolidity /> },
+        { name: 'JavaScript/React', level: 35, icon: <SiReact /> },
       ]
     },
     {
       title: '数据科学',
       icon: <FiDatabase className="text-primary-custom fs-3" />,
       skills: [
-        { name: '数据处理', level: 85, icon: null },
-        { name: '数据可视化', level: 80, icon: null },
-        { name: '机器学习', level: 75, icon: null },
-        { name: '深度学习', level: 70, icon: null },
+        { name: '数据处理', level: 75, icon: null },
+        { name: '数据可视化', level: 75, icon: null },
+        { name: '机器学习', level: 60, icon: null },
+        { name: '深度学习', level: 50, icon: null },
       ]
     },
   ];

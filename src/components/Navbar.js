@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useWeb3 } from '../utils/Web3Provider';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const { isConnected, isAdmin } = useWeb3();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +26,20 @@ const Navbar = () => {
     };
   }, []);
   
+  // 检测是否为管理员并显示欢迎提示
+  useEffect(() => {
+    if (isConnected && isAdmin) {
+      setShowWelcome(true);
+      
+      // 5秒后自动隐藏欢迎提示
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isConnected, isAdmin]);
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -31,6 +50,7 @@ const Navbar = () => {
     { title: '技能', href: '#skills' },
     { title: '项目', href: '#projects' },
     { title: '爱好', href: '#hobbies' },
+    { title: '日志', href: '/blogs', isExternal: true },
     { title: '联系', href: '#contact' }
   ];
   
@@ -69,6 +89,7 @@ const Navbar = () => {
                   className="nav-link px-3 fw-medium" 
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
+                  {...(link.isExternal ? { target: '_self' } : {})}
                 >
                   {link.title}
                 </a>
@@ -81,11 +102,29 @@ const Navbar = () => {
               transition={{ delay: 0.7 }}
             >
               <a 
-                className="btn btn-sm btn-primary-custom rounded-pill px-4 py-2" 
+                className="btn btn-sm btn-primary-custom rounded-pill px-4 py-2 shadow-sm" 
                 href="#contact"
+                style={{ fontSize: '0.875rem', fontWeight: 500 }}
               >
                 联系我
               </a>
+            </motion.li>
+            <motion.li 
+              className="nav-item ms-lg-3 mt-lg-0 mt-3"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="d-flex flex-column align-items-center">
+                <div className="connect-btn-wrapper">
+                  <ConnectButton />
+                </div>
+                {showWelcome && isAdmin && (
+                  <div className="welcome-tooltip mt-2 bg-primary-custom text-white px-3 py-1 rounded-pill shadow-sm text-center">
+                    <small>欢迎回来，管理员！</small>
+                  </div>
+                )}
+              </div>
             </motion.li>
           </ul>
         </div>

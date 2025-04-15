@@ -1,0 +1,26 @@
+/* RainbowKit 按钮自定义样式 */
+.connect-btn-wrapper [data-rk] button {
+  font-weight: 500 !important;
+  border-radius: 50px !important;
+  background: var(--primary) !important;
+  color: white !important;
+  font-size: 0.875rem !important;
+  padding: 0.25rem 1.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.connect-btn-wrapper [data-rk] button:hover {
+  background: var(--primary-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 已连接状态的按钮样式 */
+.connect-btn-wrapper [data-rk] button div {
+  gap: 6px !important;
+}
+
+/* 修复在深色模式下文本颜色 */
+.connect-btn-wrapper [data-rk] button span {
+  color: white !important;
+}

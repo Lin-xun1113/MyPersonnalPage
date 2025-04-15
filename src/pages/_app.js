@@ -1,5 +1,7 @@
 import '../styles/globals.css';
+import '../styles/rainbowkit-custom.css';
 import { useEffect } from 'react';
+import { Web3Provider } from '../utils/Web3Provider';
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
@@ -7,5 +9,9 @@ export default function App({ Component, pageProps }) {
     import('bootstrap/dist/js/bootstrap.bundle.min.js');
   }, []);
   
-  return <Component {...pageProps} />;
+  return (
+    <Web3Provider>
+      <Component {...pageProps} />
+    </Web3Provider>
+  );
 }

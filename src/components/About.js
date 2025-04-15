@@ -66,15 +66,15 @@ const About = () => {
               </div>
               
               <motion.div 
-                className="mt-5 p-4 bg-background-light rounded shadow"
+                className="mt-5 p-5 bg-background-light rounded shadow"
                 variants={variants}
               >
-                <h3 className="fs-4 fw-semibold mb-4 text-primary">教育经历</h3>
-                <div className="position-relative ps-4 border-start border-2 border-primary">
-                  <div className="mb-4 position-relative">
-                    <div className="position-absolute" style={{left: '-10px', top: '0', width: '16px', height: '16px', backgroundColor: 'var(--primary)', borderRadius: '50%'}}></div>
-                    <h4 className="fw-medium fs-5 text-white">兰州大学 × 德雷塞尔大学</h4>
-                    <p className="text-light">计算机科学与技术（数据科学方向）</p>
+                <h3 className="fs-4 fw-semibold mb-5 text-primary">教育经历</h3>
+                <div className="position-relative ps-5 border-start border-2 border-primary">
+                  <div className="mb-5 position-relative">
+                    <div className="position-absolute" style={{left: '-25px', top: '6px', width: '20px', height: '20px', backgroundColor: 'var(--primary)', borderRadius: '50%', border: '2px solid var(--background)'}}></div>
+                    <h4 className="fw-medium fs-5 text-white mb-3">兰州大学 × 德雷塞尔大学</h4>
+                    <p className="text-light mb-3">计算机科学与技术（数据科学方向）</p>
                     <p className="small text-primary-custom">2023年9月 - 至今</p>
                   </div>
                 </div>

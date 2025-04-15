@@ -35,8 +35,8 @@ const Projects = () => {
       techStack: ['Solidity', 'Web3.js', 'React'],
       icons: [<SiSolidity key="sol" />, <SiEthereum key="eth" />],
       links: [
-        { icon: <FiGithub />, url: '#' },
-        { icon: <FiExternalLink />, url: '#' },
+        { icon: <FiGithub />, url: 'https://github.com/Lin-xun1113/ClassWork-foundry-defi-stablecoin' },
+        // { icon: <FiExternalLink />, url: 'https://stablecoin-demo.netlify.app' },
       ]
     },
     {
@@ -46,18 +46,18 @@ const Projects = () => {
       techStack: ['Solidity', 'Ethers.js', 'Next.js'],
       icons: [<SiSolidity key="sol" />, <SiEthereum key="eth" />],
       links: [
-        { icon: <FiGithub />, url: '#' },
+        { icon: <FiGithub />, url: 'https://github.com/Lin-xun1113/https://github.com/Lin-xun1113/ClassWork-foundry-daodao-governanc' },
       ]
     },
     {
       title: 'NFT集合项目',
-      description: '创建了一个NFT集合智能合约，实现了铸造、交易和稀有度特性，并开发了对应的前端展示页面。',
+      description: '创建了一个NFT集合智能合约，实现了铸造、交易和简单的转换功能。',
       image: '/project-nft.jpg',
       techStack: ['Solidity', 'IPFS', 'React'],
       icons: [<SiSolidity key="sol" />, <SiEthereum key="eth" />],
       links: [
-        { icon: <FiGithub />, url: '#' },
-        { icon: <FiExternalLink />, url: '#' },
+        { icon: <FiGithub />, url: 'https://github.com/Lin-xun1113/ClassWork-foundry-nft' },
+        // { icon: <FiExternalLink />, url: 'https://nft-showcase.netlify.app' },
       ]
     },
     {
@@ -67,7 +67,7 @@ const Projects = () => {
       techStack: ['Python', 'Django', '大语言模型', 'RESTful API'],
       icons: [<SiPython key="py" />],
       links: [
-        { icon: <FiGithub />, url: '#' },
+        { icon: <FiGithub />, url: 'https://github.com/Lin-xun1113/SRJC' },
       ]
     },
   ];
@@ -144,7 +144,9 @@ const Projects = () => {
             variants={itemVariants}
           >
             <a 
-              href="#" 
+              href="https://github.com/Lin-xun1113?tab=repositories" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn btn-primary-custom"
             >
               查看更多项目

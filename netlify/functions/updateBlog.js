@@ -232,6 +232,21 @@ exports.handler = async (event, context) => {
       console.log('操作:', operation, '博客标题:', blog.title);
       console.log('SHA值:', sha ? '有SHA' : '无SHA');
       
+      // 检查当前分支
+      console.log('正在尝试获取仓库分支信息...');
+      let repoDefaultBranch = 'master';
+      try {
+        const repoInfo = await octokit.rest.repos.get({
+          owner: REPO_OWNER,
+          repo: REPO_NAME
+        });
+        repoDefaultBranch = repoInfo.data.default_branch;
+        console.log('仓库默认分支为:', repoDefaultBranch);
+      } catch (branchError) {
+        console.error('获取仓库信息失败:', branchError.message);
+      }
+
+      console.log(`使用分支: ${repoDefaultBranch} 创建/更新文件`);
       const response = await octokit.rest.repos.createOrUpdateFileContents({
         owner: REPO_OWNER,
         repo: REPO_NAME,
@@ -239,7 +254,7 @@ exports.handler = async (event, context) => {
         message: `${operation} blog: ${blog.title}`,
         content: Buffer.from(content).toString('base64'),
         sha: sha, // 如果文件已存在，需要提供sha
-        branch: 'master', // 使用master分支而不main
+        branch: repoDefaultBranch, // 动态使用仓库默认分支
       });
       console.log('博客数据成功保存到GitHub');
     } catch (error) {

@@ -17,7 +17,7 @@ const headers = {
 };
 
 // u83b7u53d6u535au5ba2u5217u8868
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   console.log('blogs函数被调用');
 
   // 处理预检请求

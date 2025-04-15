@@ -3,6 +3,14 @@ import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
 
+// 根据当前页面动态获取正确的WalletConnect元数据URL
+const getMetadataUrl = () => {
+  if (typeof window === 'undefined') return 'https://linxun.windsurf.build';
+  
+  // 修复不同页面的元数据URL问题
+  return window.location.origin;
+};
+
 // 管理员钱包地址列表 - 之后会由用户提供
 const ADMIN_ADDRESSES = [
   // 这是一个测试地址，请替换为您自己的钱包地址
@@ -22,7 +30,7 @@ const config = getDefaultConfig({
   },
   // 添加正确的元数据配置
   metadata: {
-    url: 'https://linxun.windsurf.build',
+    url: getMetadataUrl(),
     description: 'Lin Xun的个人网站与博客',
     icons: ['https://linxun.windsurf.build/favicon.ico']
   }

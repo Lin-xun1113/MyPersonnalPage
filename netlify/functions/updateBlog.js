@@ -1,5 +1,11 @@
-const { Octokit } = require('octokit');
-const { ethers } = require('ethers');
+import { Octokit } from 'octokit';
+import * as ethers from 'ethers';
+
+// 检查环境变量
+// 如果没有GITHUB_TOKEN，直接输出警告
+if (!process.env.GITHUB_TOKEN) {
+  console.error('警告: GITHUB_TOKEN环境变量未设置');
+}
 
 // u521du59cbu5316GitHub API
 const octokit = new Octokit({
@@ -14,16 +20,32 @@ const ADMIN_ADDRESSES = []; // u7a7au6570u7ec4uff0cu7a0bu5e8fu4f1au4eceu5ba2u623
 // u9a8cu8bc1u7b7eu540d
 async function verifySignature(address, message, signature) {
   try {
+    // 输出调试信息
+    console.log('验证签名参数:', {
+      address,
+      message,
+      signatureLength: signature ? signature.length : 0
+    });
+    
+    if (!address || !message || !signature) {
+      console.error('签名参数不完整');
+      return false;
+    }
+    
+    // ethers v5 版本的API
     const signerAddr = ethers.utils.verifyMessage(message, signature);
-    return signerAddr.toLowerCase() === address.toLowerCase();
+    const isValid = signerAddr.toLowerCase() === address.toLowerCase();
+    console.log(`签名验证${isValid ? '成功' : '失败'}: 签名者=${signerAddr}, 地址=${address}`);
+    
+    return isValid;
   } catch (error) {
-    console.error('Signature verification error:', error);
+    console.error('签名验证错误:', error);
     return false;
   }
 }
 
 // u66f4u65b0u535au5ba2
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   console.log('updateBlog函数被调用');
   
   // 添加CORS头
@@ -55,21 +77,37 @@ exports.handler = async (event, context) => {
     const { operation, blog, address, signature, message, adminList } = JSON.parse(event.body);
     
     // u9a8cu8bc1u7b7eu540d
+    console.log('正在验证签名，地址:', address);
     const isSignatureValid = await verifySignature(address, message, signature);
     if (!isSignatureValid) {
-      return { statusCode: 403, body: JSON.stringify({ error: 'u7b7eu540du9a8cu8bc1u5931u8d25' }) };
+      console.error('签名验证失败');
+      return { 
+        statusCode: 403, 
+        headers,
+        body: JSON.stringify({ error: '签名验证失败' }) 
+      };
     }
+    console.log('签名验证成功');
     
     // u4f7fu7528u5ba2u6237u7aefu63d0u4f9bu7684u7ba1u7406u5458u5217u8868u8fdbu884cu9a8cu8bc1
     // u5b9eu9645u4e0au8fd9u5e94u8be5u5b58u50a8u5728u670du52a1u5668u7aefuff0cu4f46u6211u4eecu4f7fu7528u7b7eu540du9a8cu8bc1u6765u786eu4fddu5b89u5168u6027
     const allAdminAddresses = adminList || ADMIN_ADDRESSES;
+    console.log('管理员列表:', JSON.stringify(allAdminAddresses));
+    console.log('当前钱包地址:', address);
+    
     const isAdmin = allAdminAddresses.some(
       admin => admin.toLowerCase() === address.toLowerCase()
     );
 
     if (!isAdmin) {
-      return { statusCode: 403, body: JSON.stringify({ error: 'u6ca1u6709u7ba1u7406u5458u6743u9650' }) };
+      console.error('没有管理员权限');
+      return { 
+        statusCode: 403, 
+        headers,
+        body: JSON.stringify({ error: '没有管理员权限' }) 
+      };
     }
+    console.log('管理员验证成功');
 
     // u83b7u53d6u73b0u6709u535au5ba2u6570u636e// 获取现有博客数据
     let blogs = [];

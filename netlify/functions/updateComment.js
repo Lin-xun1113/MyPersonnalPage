@@ -1,5 +1,5 @@
-const { Octokit } = require('octokit');
-const { ethers } = require('ethers');
+import { Octokit } from 'octokit';
+import * as ethers from 'ethers';
 
 // u521du59cbu5316GitHub API
 const octokit = new Octokit({
@@ -13,16 +13,25 @@ const BLOGS_PATH = 'data/blogs.json'; // u5b58u50a8u535au5ba2u6570u636eu7684u8de
 // u9a8cu8bc1u7b7eu540d
 async function verifySignature(address, message, signature) {
   try {
+    console.log('验证评论签名参数:', {
+      address,
+      message,
+      signatureLength: signature ? signature.length : 0
+    });
+    
     const signerAddr = ethers.utils.verifyMessage(message, signature);
-    return signerAddr.toLowerCase() === address.toLowerCase();
+    const isValid = signerAddr.toLowerCase() === address.toLowerCase();
+    console.log(`签名验证${isValid ? '成功' : '失败'}: 签名者=${signerAddr}, 地址=${address}`);
+    
+    return isValid;
   } catch (error) {
-    console.error('Signature verification error:', error);
+    console.error('签名验证错误:', error);
     return false;
   }
 }
 
 // u66f4u65b0u535au5ba2u8bc4u8bba
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   // u53eau5904u7406POSTu8bf7u6c42
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'u65b9u6cd5u4e0du5141u8bb8' }) };

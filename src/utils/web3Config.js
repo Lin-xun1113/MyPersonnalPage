@@ -20,6 +20,12 @@ const config = getDefaultConfig({
     [optimism.id]: http(),
     [arbitrum.id]: http(),
   },
+  // 添加正确的元数据配置
+  metadata: {
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://linxun.windsurf.build',
+    description: 'Lin Xun的个人网站与博客',
+    icons: ['https://linxun.windsurf.build/favicon.ico']
+  }
 });
 
 // 检查是否为管理员

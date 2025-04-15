@@ -24,9 +24,31 @@ async function verifySignature(address, message, signature) {
 
 // u66f4u65b0u535au5ba2
 exports.handler = async (event, context) => {
-  // u53eau5904u7406POSTu8bf7u6c42
+  console.log('updateBlog函数被调用');
+  
+  // 添加CORS头
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+  
+  // 处理预检请求
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: ''
+    };
+  }
+  
+  // 只处理POST请求
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'u65b9u6cd5u4e0du5141u8bb8' }) };
+    return { 
+      statusCode: 405, 
+      headers,
+      body: JSON.stringify({ error: '方法不允许' }) 
+    };
   }
 
   try {
@@ -49,20 +71,45 @@ exports.handler = async (event, context) => {
       return { statusCode: 403, body: JSON.stringify({ error: 'u6ca1u6709u7ba1u7406u5458u6743u9650' }) };
     }
 
-    // u83b7u53d6u73b0u6709u535au5ba2u6570u636e
+    // u83b7u53d6u73b0u6709u535au5ba2u6570u636e// 获取现有博客数据
     let blogs = [];
     try {
+      console.log(`正在从GitHub获取博客数据: ${REPO_OWNER}/${REPO_NAME}/${BLOGS_PATH}`);
+      console.log(`使用的GitHub Token长度: ${process.env.GITHUB_TOKEN ? process.env.GITHUB_TOKEN.length : 0}`);
+
+      // 检查GitHub Token是否已设置
+      if (!process.env.GITHUB_TOKEN) {
+        throw new Error('未设置GITHUB_TOKEN环境变量');
+      }
+
       const { data } = await octokit.rest.repos.getContent({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path: BLOGS_PATH,
         ref: 'main',
       });
+      console.log('成功获取GitHub文件内容');
       const content = Buffer.from(data.content, 'base64').toString();
       blogs = JSON.parse(content);
+      console.log(`成功解析博客数据，找到${blogs.length}篇博客`);
     } catch (error) {
-      // u5982u679cu6587u4ef6u4e0du5b58u5728uff0cu5219u521bu5efau7a7au6570u7ec4
-      console.log('Blog file not found, creating new one');
+      // 如果文件不存在，则创建空数组
+      console.error('获取博客数据出错:', error.message);
+      console.error('错误详情:', error.stack);
+
+      // 如果是首次使用，创建一个新的博客数组
+      if (error.status === 404) {
+        console.log('博客文件不存在，将创建新文件');
+      } else {
+        // 对于其他错误，返回更具体的错误信息
+        return { 
+          statusCode: 500, 
+          body: JSON.stringify({ 
+            error: `获取博客数据失败: ${error.message}`,
+            details: error.stack
+          })
+        };
+      }
     }
 
     // u6839u636eu64cdu4f5cu7c7bu578bu5904u7406
@@ -93,45 +140,76 @@ exports.handler = async (event, context) => {
       blogs = blogs.filter(b => b.id !== blog.id);
     }
 
-    // u5c06u66f4u65b0u540eu7684u6570u636eu5199u56deu5230GitHub
+    // u5c06u66f4u65b0u540eu7684u6570u636eu5199u56deu5230    // 将更新后的数据写回到GitHub
     const content = JSON.stringify(blogs, null, 2);
     let sha;
     
     try {
-      // u83b7u53d6u5f53u524du6587u4ef6u7684SHAu503c(u5982u679cu5b58u5728)
+      console.log('尝试获取现有文件的SHA值');
+      // 获取当前文件的SHA值(如果存在)
       const fileData = await octokit.rest.repos.getContent({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path: BLOGS_PATH,
+        ref: 'main',
       });
       sha = fileData.data.sha;
+      console.log(`获取到现有文件的SHA值: ${sha}`);
     } catch (error) {
-      // u6587u4ef6u4e0du5b58u5728uff0cu5c06u521bu5efau65b0u6587u4ef6
+      // 如果文件不存在，sha保持undefined
+      console.log('文件尚不存在，将创建新文件');
+      if (error.status !== 404) {
+        console.error('获取文件SHA值时出错:', error.message);
+      }
     }
 
-    // u66f4u65b0u6216u521bu5efau6587u4ef6
-    await octokit.rest.repos.createOrUpdateFileContents({
-      owner: REPO_OWNER,
-      repo: REPO_NAME,
-      path: BLOGS_PATH,
-      message: `${operation} blog: ${blog.title || blog.id}`,
-      content: Buffer.from(content).toString('base64'),
-      sha: sha,
-      branch: 'main',
-    });
+    // 创建或更新文件
+    try {
+      console.log(`准备${sha ? '更新' : '创建'}博客文件`);
+      const response = await octokit.rest.repos.createOrUpdateFileContents({
+        owner: REPO_OWNER,
+        repo: REPO_NAME,
+        path: BLOGS_PATH,
+        message: `${operation} blog: ${blog.title}`,
+        content: Buffer.from(content).toString('base64'),
+        sha: sha, // 如果文件已存在，需要提供sha
+        branch: 'main',
+      });
+      console.log('博客数据成功保存到GitHub');
+    } catch (error) {
+      console.error('保存博客数据失败:', error.message);
+      console.error('错误详情:', error.stack);
+      return { 
+        statusCode: 500, 
+        body: JSON.stringify({ 
+          error: `保存博客数据失败: ${error.message}`,
+          details: error.stack 
+        }) 
+      };
+    }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, blogs }),
+    return { 
+      statusCode: 200, 
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      body: JSON.stringify({ message: '操作成功', blogs }) 
     };
   } catch (error) {
-    console.error('Error updating blog:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'u66f4u65b0u535au5ba2u5931u8d25' })
+    console.error('函数执行出错:', error.message);
+    console.error('错误详情:', error.stack);
+    return { 
+      statusCode: 500, 
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      body: JSON.stringify({ 
+        error: '服务器错误', 
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      }) 
     };
   }
 };

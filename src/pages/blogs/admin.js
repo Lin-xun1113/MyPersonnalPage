@@ -184,24 +184,42 @@ const AdminPage = () => {
         }, 1000);
       } else {
         // 在生产环境中使用Netlify Functions
-        const response = await fetch('/.netlify/functions/updateBlog', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            operation: editingId ? 'update' : 'add',
-            blog: editingId ? { ...formData, id: editingId } : formData,
-            address,
-            signature,
-            message: messageToSign,
-            adminList: [...adminList, ...ADMIN_ADDRESSES],
-          }),
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || '操作失败');
+        console.log('发送请求到Netlify Function:', '/.netlify/functions/updateBlog');
+        try {
+          const response = await fetch('/.netlify/functions/updateBlog', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              operation: editingId ? 'update' : 'add',
+              blog: editingId ? { ...formData, id: editingId } : formData,
+              address,
+              signature,
+              message: messageToSign,
+              adminList: [...adminList, ...ADMIN_ADDRESSES],
+            }),
+          });
+          
+          console.log('收到响应:', response.status, response.statusText);
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('响应错误:', response.status, errorText);
+            let errorMessage = '操作失败';
+            
+            try {
+              const errorData = JSON.parse(errorText);
+              errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+              errorMessage = `服务器响应错误 (${response.status}): ${errorText.substring(0, 100)}`;
+            }
+            
+            throw new Error(errorMessage);
+          }
+        } catch (error) {
+          console.error('网络请求错误:', error);
+          throw new Error(`网络请求失败: ${error.message}`);
         }
         
         const data = await response.json();
@@ -218,6 +236,8 @@ const AdminPage = () => {
       console.error('提交博客出错:', error);
       alert(`操作失败: ${error.message}`);
       setSubmitting(false);
+      // 重置提交状态，让用户可以重试
+      document.getElementById('submitButton')?.removeAttribute('disabled');
     }
   };
   
@@ -440,12 +460,13 @@ const AdminPage = () => {
                       </div>
                       
                       <div className="d-flex gap-2">
-                        <button 
-                          type="submit" 
-                          className="btn btn-primary-custom"
+                        <button
+                          id="submitButton"
+                          type="submit"
+                          className="btn btn-primary-custom px-4"
                           disabled={submitting}
                         >
-                          {submitting ? '提交中...' : (editingId ? '更新博客' : '发布博客')}
+                          {submitting ? '提交中...' : editingId ? '更新博客' : '发布博客'}
                         </button>
                         
                         {editingId && (

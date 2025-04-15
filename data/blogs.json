@@ -33,6 +33,12 @@
         "content": "Hi",
         "author": "0x01598CdD08c9737a84ead88BAaED1ed4c3330cD2",
         "createdAt": "2025-04-15T11:54:58.121Z"
+      },
+      {
+        "id": "1744718141489",
+        "content": "delete me",
+        "author": "0x01598CdD08c9737a84ead88BAaED1ed4c3330cD2",
+        "createdAt": "2025-04-15T11:55:41.489Z"
       }
     ]
   }

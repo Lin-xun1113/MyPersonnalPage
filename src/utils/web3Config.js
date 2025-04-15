@@ -44,4 +44,42 @@ const isAdmin = (address) => {
   );
 };
 
-export { config, isAdmin, ADMIN_ADDRESSES };
+// 消息签名函数
+const signMessage = async (message) => {
+  if (typeof window === 'undefined' || !window.ethereum) {
+    console.error('浏览器不支持以太坊或者未安装钱包');
+    throw new Error('浏览器不支持以太坊或者未安装钱包');
+  }
+
+  try {
+    // 获取当前连接的账户
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    const address = accounts[0];
+    
+    if (!address) {
+      throw new Error('没有连接的钱包账户');
+    }
+
+    console.log('准备签名，使用地址:', address);
+    console.log('签名消息:', message);
+    
+    // 使用 personal_sign 方法进行签名
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [message, address],
+    });
+    
+    console.log('签名成功:', signature.substring(0, 20) + '...');
+    
+    return {
+      signature,
+      message,
+      address
+    };
+  } catch (error) {
+    console.error('签名过程中出错:', error);
+    throw error;
+  }
+};
+
+export { config, isAdmin, ADMIN_ADDRESSES, signMessage };

@@ -127,7 +127,23 @@ const AdminPage = () => {
       // 生成要签名的消息
       const operation = editingId ? 'update' : 'add';
       const messageToSign = `我正在${operation === 'add' ? '创建' : '更新'}博客: ${formData.title}`;
-      const { signature, message } = await signMessage(messageToSign);
+      console.log('准备签名消息:', messageToSign);
+      
+      let signature, message;
+      try {
+        const result = await signMessage(messageToSign);
+        signature = result.signature;
+        message = result.message;
+        console.log('签名成功:', {
+          signatureLength: signature ? signature.length : 0,
+          message
+        });
+      } catch (signError) {
+        console.error('签名失败:', signError);
+        alert(`签名失败: ${signError.message}`);
+        setSubmitting(false);
+        return;
+      }
       
       // 获取管理员地址列表
       const storedAdminAddresses = window.localStorage.getItem('adminAddresses');
@@ -184,53 +200,91 @@ const AdminPage = () => {
         }, 1000);
       } else {
         // 在生产环境中使用Netlify Functions
-        console.log('发送请求到Netlify Function:', '/.netlify/functions/updateBlog');
+        console.log('正在尝试发送请求到Netlify Function...');
+        console.log('请求URL:', '/.netlify/functions/updateBlog');
+        console.log('请求数据:', {
+          operation: editingId ? 'update' : 'add',
+          blogTitle: formData.title,
+          address: address,
+          signatureAvailable: !!signature,
+          adminListLength: adminList.length + ADMIN_ADDRESSES.length
+        });
+        
         try {
-          const response = await fetch('/.netlify/functions/updateBlog', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              operation: editingId ? 'update' : 'add',
-              blog: editingId ? { ...formData, id: editingId } : formData,
-              address,
-              signature,
-              message: messageToSign,
-              adminList: [...adminList, ...ADMIN_ADDRESSES],
-            }),
-          });
+          const requestBody = {
+            operation: editingId ? 'update' : 'add',
+            blog: editingId ? { ...formData, id: editingId } : formData,
+            address,
+            signature,
+            message: messageToSign,
+            adminList: [...adminList, ...ADMIN_ADDRESSES],
+          };
           
-          console.log('收到响应:', response.status, response.statusText);
+          console.log('完整请求内容:', JSON.stringify(requestBody).substring(0, 200) + '...');
           
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error('响应错误:', response.status, errorText);
-            let errorMessage = '操作失败';
+          // 直接使用XMLHttpRequest而非fetch，更容易跟踪错误
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/.netlify/functions/updateBlog', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          
+          xhr.onreadystatechange = function() {
+            console.log(`XHR状态变化: readyState=${xhr.readyState}, status=${xhr.status}`);
             
-            try {
-              const errorData = JSON.parse(errorText);
-              errorMessage = errorData.error || errorMessage;
-            } catch (e) {
-              errorMessage = `服务器响应错误 (${response.status}): ${errorText.substring(0, 100)}`;
+            if (xhr.readyState === 4) { // 请求完成
+              if (xhr.status >= 200 && xhr.status < 300) { // 成功
+                console.log('已收到成功响应:', xhr.status);
+                const data = JSON.parse(xhr.responseText);
+                
+                // 重置表单
+                setFormData({ title: '', content: '' });
+                setEditingId(null);
+                setBlogs(data.blogs);
+                
+                alert(editingId ? '博客更新成功' : '博客创建成功');
+                setSubmitting(false);
+              } else { // 失败
+                console.error('请求失败:', xhr.status, xhr.responseText);
+                try {
+                  const errorData = JSON.parse(xhr.responseText);
+                  alert(`操作失败: ${errorData.error || '未知错误'}`);
+                } catch (e) {
+                  alert(`服务器错误 (${xhr.status}): ${xhr.responseText.substring(0, 100)}`);
+                }
+                setSubmitting(false);
+                document.getElementById('submitButton')?.removeAttribute('disabled');
+              }
             }
-            
-            throw new Error(errorMessage);
-          }
+          };
+          
+          xhr.onerror = function() {
+            console.error('网络错误:', xhr.statusText);
+            alert(`网络错误: 无法连接到服务器`);
+            setSubmitting(false);
+            document.getElementById('submitButton')?.removeAttribute('disabled');
+          };
+          
+          xhr.send(JSON.stringify(requestBody));
+          console.log('请求已发送');
+          return; // 不再继续原始的fetch请求逻辑
+          
+          // 这些代码不再执行
+          // const response = await fetch('/.netlify/functions/updateBlog', {
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          //   body: JSON.stringify(requestBody),
+          // });
+          // 
+          // console.log('收到响应:', response.status, response.statusText);
+          
+          // 这部分代码不再执行，上面的XMLHttpRequest已经处理了响应
         } catch (error) {
-          console.error('网络请求错误:', error);
-          throw new Error(`网络请求失败: ${error.message}`);
+          console.error('初始化请求时出错:', error);
+          alert(`初始化请求失败: ${error.message}`);
+          setSubmitting(false);
+          document.getElementById('submitButton')?.removeAttribute('disabled');
         }
-        
-        const data = await response.json();
-        
-        // 重置表单
-        setFormData({ title: '', content: '' });
-        setEditingId(null);
-        setBlogs(data.blogs);
-        
-        alert(editingId ? '博客更新成功' : '博客创建成功');
-        setSubmitting(false);
       }
     } catch (error) {
       console.error('提交博客出错:', error);

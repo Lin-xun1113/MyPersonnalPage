@@ -49,5 +49,13 @@
     "createdAt": "2025-04-16T00:38:47.978Z",
     "updatedAt": "2025-04-16T01:00:00.848Z",
     "comments": []
+  },
+  {
+    "id": "1745311887815",
+    "title": "2025-4-22 A short review of my first First Flight",
+    "content": "(Bug found: 1Medium, 2Low)\nThe total number of bug in this ``Eggstravaganza `` first flight is 10( includes 2 High, 4 Medium, 4 Low. But I only found 1 medium and 2 low), which is really make me upset. There are too many things I can learn from this contest.\n\n1. Ownership check is essential in all kinds of code ( includes access control, ownership seperation in different contracts ...etc\n\nalways remember to determine who should or shouldn't access this function. How large the disaster can be when  a melicious person use the wrong/miss ownership vulnerability\n\n2. It's leaves a vulnerability when interact with ERC721 using _mint instead of using _safeMint/ using transferFrom instead of using safeTransferFrom.\n\nIn summary, you should always remeber to consider a bad situation that the recipient not set the ERC721 receiver interface correctly. The NFT would loss if the address couldn't handle the NFT.\n",
+    "createdAt": "2025-04-22T08:51:27.815Z",
+    "updatedAt": "2025-04-22T08:51:27.815Z",
+    "comments": []
   }
 ]

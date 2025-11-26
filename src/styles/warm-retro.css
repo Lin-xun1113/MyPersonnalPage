@@ -1,0 +1,218 @@
+/* ============================================
+   暖色复古未来主义 (Warm Retro-Futurism)
+   Cassette Futurism / Solarpunk Aesthetic
+   ============================================ */
+
+/* 导入字体 */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Archivo+Black&display=swap');
+
+/* ========== 核心变量系统 ========== */
+:root {
+  /* 暖色调板 */
+  --warm-bg: #121110;       /* 极深暖灰，接近黑 */
+  --warm-surface: #1c1b19;  /* 次级背景 */
+  --warm-card: #23211f;     /* 卡片背景 */
+  
+  --warm-primary: #ff7e33;  /* 日落橙 */
+  --warm-secondary: #ffb142;/* 琥珀金 */
+  --warm-accent: #ff4757;   /* 复古红 */
+  --warm-success: #2ed573;  /* 矩阵绿 */
+  --warm-text: #e8e6e3;     /* 米白 */
+  --warm-muted: #88807b;    /* 暖灰字 */
+  
+  --warm-border: #3a3633;   /* 边框色 */
+  
+  /* 字体栈 */
+  --font-display: 'Syne', sans-serif;        /* 用于大标题 */
+  --font-mono: 'Space Mono', monospace;      /* 用于数据、代码、正文 */
+  --font-impact: 'Archivo Black', sans-serif; /* 用于巨大冲击力文字 */
+  
+  /* 布局 */
+  --page-padding: 5vw;
+  --border-radius: 4px;     /* 较小的圆角，更硬朗 */
+}
+
+/* ========== 基础重置 ========== */
+html, body {
+  background-color: var(--warm-bg);
+  color: var(--warm-text);
+  font-family: var(--font-mono); /* 默认使用等宽字体营造科技感 */
+  font-size: 16px;
+  overflow-x: hidden;
+  cursor: crosshair; /* 默认十字光标 */
+}
+
+/* 噪点纹理遮罩 */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* 扫描线效果 (柔和版) */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.6;
+}
+
+/* ========== 排版系统 ========== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--warm-text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.display-text {
+  font-family: var(--font-impact);
+  text-transform: uppercase;
+  line-height: 0.9;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--warm-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.mono-label::before {
+  content: '// ';
+  opacity: 0.5;
+}
+
+/* ========== 通用组件 ========== */
+
+/* 1. 复古实体按钮 */
+.warm-btn {
+  display: inline-block;
+  background: var(--warm-primary);
+  color: #000;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 2px;
+  position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 0.1s;
+  box-shadow: 
+    inset 2px 2px 0px rgba(255,255,255,0.3),
+    inset -2px -2px 0px rgba(0,0,0,0.2),
+    4px 4px 0px var(--warm-border);
+}
+
+.warm-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 
+    inset 2px 2px 0px rgba(255,255,255,0.3),
+    inset -2px -2px 0px rgba(0,0,0,0.2),
+    6px 6px 0px var(--warm-text);
+  color: #000;
+}
+
+.warm-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.warm-btn-outline {
+  background: transparent;
+  color: var(--warm-primary);
+  border: 2px solid var(--warm-primary);
+  box-shadow: none;
+}
+
+.warm-btn-outline:hover {
+  background: rgba(255, 126, 51, 0.1);
+  color: var(--warm-primary);
+  transform: none;
+  box-shadow: none;
+}
+
+/* 2. 面板/卡片 */
+.warm-panel {
+  background: var(--warm-surface);
+  border: 1px solid var(--warm-border);
+  padding: 2rem;
+  position: relative;
+}
+
+.warm-panel::after {
+  /* 装饰性角落 */
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, transparent 50%, var(--warm-primary) 50%);
+}
+
+/* 3. 文本高亮 */
+.highlight {
+  color: var(--warm-primary);
+}
+
+/* 4. 滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  background: var(--warm-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--warm-border);
+  border: 2px solid var(--warm-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--warm-primary);
+}
+
+/* ========== 布局辅助 ========== */
+.container-fluid {
+  padding-left: var(--page-padding);
+  padding-right: var(--page-padding);
+}
+
+/* 网格背景 */
+.grid-bg {
+  background-image: 
+    linear-gradient(var(--warm-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--warm-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center top;
+  opacity: 0.1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
